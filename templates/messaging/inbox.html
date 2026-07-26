@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Support Inbox{% endblock %}
+{% block content %}
+<h1>Support Inbox</h1>
+<table class="data-table">
+    <thead><tr><th>Student</th><th>Subject</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+    <tbody>
+    {% for m in messages_list %}
+        <tr>
+            <td>{{ m.student.username }}</td>
+            <td>{{ m.subject }}</td>
+            <td><span class="badge badge-{{ m.status|lower }}">{{ m.get_status_display }}</span></td>
+            <td>{{ m.created_at|date:"d M Y" }}</td>
+            <td><a href="{% url 'messaging:reply_message' m.pk %}" class="btn">Reply</a></td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="5">No messages.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

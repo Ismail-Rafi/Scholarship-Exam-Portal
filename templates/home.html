@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Scholarship Exam Portal — Home{% endblock %}
+
+{% block content %}
+<div class="portal-home-wrapper">
+    
+    <!-- Hero Section -->
+    <section class="portal-hero">
+        <div class="hero-container-flex">
+            <div class="hero-left-text">
+                <span class="badge-accent">✨ 'দি সিটি ওয়েলফেয়ার' বৃত্তি প্রকল্প ২০২৬</span>
+                <h1>শুভ্রতার স্পর্শে লালিত স্বপ্ন বিকশিত হোক <span class="highlight-green">সত্যের ছোঁয়ায়</span></h1>
+                <p>মেধাবী শিক্ষার্থীদের স্বপ্ন পূরণের একটি নির্ভরযোগ্য মাধ্যম। কোনো প্রকার জটিল কাগজের ঝামেলা ছাড়াই সম্পূর্ণ ডিজিটাল পদ্ধতিতে শিক্ষার্থীরা এখানে আবেদন করতে পারবেন। মেধার সঠিক মূল্যায়ন ও শিক্ষার্থীদের আর্থিক সহায়তাই আমাদের মূল উদ্দেশ্য।</p>
+                <div class="hero-buttons-group">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'accounts:redirect_dashboard' %}" class="btn-portal-main">
+                            <i class="fa-solid fa-gauge"></i> ড্যাশবোর্ডে যান
+                        </a>
+                    {% else %}
+                        <a href="{% url 'accounts:register' %}" class="btn-portal-main">
+                            <i class="fa-solid fa-user-plus"></i> রেজিস্ট্রেশন করুন
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="hero-right-img">
+                <img src="{% static '1.jpg' %}" alt="Scholarship Winners" onerror="this.src='https://placehold.co/600x400/bbf7d0/065f46?text=Scholarship+Portal'">
+            </div>
+        </div>
+    </section>
+
+    <!-- Notice Ticker Bar -->
+    <div class="portal-ticker-zone">
+        <div class="ticker-left">
+            <span class="ticker-bell">🔔 <span class="pulse-dot"></span> Latest —</span>
+            <marquee behavior="scroll" direction="left" class="ticker-marquee">
+                Registrations are ongoing! Register now before seats fill up.
+            </marquee>
+        </div>
+        <span class="ticker-right-label">Notice Panel</span>
+    </div>
+
+    <!-- Countdown Registration Box -->
+    <section class="portal-countdown-wrapper">
+        <div class="countdown-inner-box">
+            <div class="countdown-main-content">
+                <span class="reg-deadline-pill">⏳ রেজিস্ট্রেশন সময়সীমা</span>
+                <h2>সেরাদের সেরা হয়ে, নিজেকে <span class="highlight-green">প্রমাণ করার চ্যালেঞ্জ</span> নিতে চাইলে আজই এনরোল করে ফেলো</h2>
+                
+                <div class="portal-timer-grid" id="countdown" data-deadline="{% if exams.0.registration_deadline %}{{ exams.0.registration_deadline|date:'Y-m-d' }}{% else %}2026-07-30{% endif %}">
+                    <div class="time-box"><span class="num" id="cd-days">00</span><span class="lbl">দিন</span></div>
+                    <div class="time-box"><span class="num" id="cd-hours">00</span><span class="lbl">ঘণ্টা</span></div>
+                    <div class="time-box"><span class="num" id="cd-mins">00</span><span class="lbl">মিনিট</span></div>
+                    <div class="time-box"><span class="num" id="cd-secs">00</span><span class="lbl">সেকেন্ড</span></div>
+                </div>
+
+                <div class="exam-timeline-info">
+                    {% if exams %}
+                        <p>📅 <strong>আবেদনের শেষ তারিখ:</strong> {{ exams.0.registration_deadline|date:"d F, Y" }}</p>
+                        <p>✍️ <strong>পরীক্ষার তারিখ:</strong> {{ exams.0.exam_date|date:"d F, Y" }}</p>
+                    {% else %}
+                        <p>📅 <strong>আবেদনের শেষ তারিখ:</strong> ৩০ জুলাই, ২০২৬</p>
+                        <p>✍️ <strong>পরীক্ষার তারিখ:</strong> ১০ আগস্ট, ২০২৬</p>
+                    {% endif %}
+                </div>
+                
+                <a href="{% url 'accounts:register' %}" class="btn-portal-secondary">রেজিস্ট্রেশন করুন</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ৫ ধাপে আবেদন প্রক্রিয়া (Process Section) -->
+    <section class="portal-process-section">
+        <div class="portal-section-header">
+            <h2>মাত্র <span class="highlight-green">৫ ধাপে আবেদন</span> প্রক্রিয়া</h2>
+            <p>প্রতিটি ধাপ অনুসরণ করে সহজেই আপনার রেজিস্ট্রেশন সম্পন্ন করুন।</p>
+        </div>
+        <div class="portal-process-flow">
+            <div class="flow-card">
+                <div class="flow-num-badge">১</div>
+                <div class="flow-icon">📝</div>
+                <h3>লগইন/রেজিস্টার</h3>
+                <p>ওয়েবসাইটে সঠিক তথ্য দিয়ে নিজের অ্যাকাউন্ট সাইন-ইন করো।</p>
+            </div>
+            <div class="flow-card">
+                <div class="flow-num-badge">২</div>
+                <div class="flow-icon">💳</div>
+                <h3>ফি পেমেন্ট</h3>
+                <p>বিকাশ/নগদ বা রকেটের মাধ্যমে নির্দিষ্ট অ্যাপ্লিকেশন ফি পে করো।</p>
+            </div>
+            <div class="flow-card">
+                <div class="flow-num-badge">৩</div>
+                <div class="flow-icon">📂</div>
+                <h3>ফি প্রদানের তথ্য</h3>
+                <p>পেমেন্টের ট্রানজেকশন আইডি ও প্রয়োজনীয় তথ্য সঠিক বক্সে প্রদান করো।</p>
+            </div>
+            <div class="flow-card">
+                <div class="flow-num-badge">৪</div>
+                <div class="flow-icon">📄</div>
+                <h3>আবেদন তথ্য</h3>
+                <p>রেজিস্ট্রেশন ফরমের প্রয়োজনীয় তথ্য সঠিকভাবে পূরণ করে ফর্ম সাবমিট করো।</p>
+            </div>
+            <div class="flow-card">
+                <div class="flow-num-badge">✅</div>
+                <div class="flow-icon">🎓</div>
+                <h3>অনুমোদন</h3>
+                <p>অ্যাডমিন প্যানেল থেকে যাচাই-বাছাই শেষে প্রবেশপত্র জেনারেট হবে।</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ভিডিও ও গাইডলাইন সেকশন (Embed URL Fixed) -->
+    <section class="portal-video-guideline">
+        <div class="video-flex-container">
+            <div class="video-box-left">
+                <iframe src="https://www.youtube.com/embed/9bs2ykhX8lU" title="How to Apply" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="guideline-text-right">
+                <h2>স্কলারশিপ পরীক্ষায় <span class="highlight-green">কীভাবে আবেদন</span> করবে?</h2>
+                <p>নিচের ৫টি সহজ ধাপ অনুসরণ করে আপনার রেজিস্ট্রেশন সম্পূর্ণ করুন:</p>
+                <ul class="guideline-bullets">
+                    <li>প্রথমে আপনার প্রোফাইল তৈরি করতে রেজিস্ট্রেশন বাটনে ক্লিক করুন।</li>
+                    <li>আপনার সচল বিকাশ বা নগদ অ্যাকাউন্ট থেকে ফি সাবমিট করুন।</li>
+                    <li>Transaction ID ও রেফারেন্স কোড সঠিকভাবে ইনপুট দিন।</li>
+                    <li>সবশেষে শিক্ষাগত যোগ্যতার প্রয়োজনীয় তথ্য প্রদান করে 'Apply' চাপুন।</li>
+                    <li>আবেদন সেশন সফলভাবে অনুমোদিত হলে ড্যাশবোর্ডে প্রবেশপত্র পাবেন।</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- কেন এই স্কলারশিপ প্রকল্প? -->
+    <section class="portal-why-details">
+        <div class="portal-section-header">
+            <h2>কেন এই <span class="highlight-green">স্কলারশিপ প্রকল্প?</span></h2>
+            <p>এই উদ্যোগ মেধার বিকাশকে উৎসাহিত করতে এবং দীর্ঘমেয়াদী পৃষ্ঠপোষকতা প্রদানে ডিজাইন করা হয়েছে।</p>
+        </div>
+        <div class="details-cards-grid">
+            <div class="detail-card-item">
+                <div class="detail-icon">🎯</div>
+                <h3>মেধার সঠিক মূল্যায়ন</h3>
+                <p>আমরা শিক্ষার্থীদের সুপ্ত প্রতিভা চিহ্নিত করি এবং বৃত্তি প্রদানের মাধ্যমে তাদের উচ্চশিক্ষার পথ সুগম করি।</p>
+            </div>
+            <div class="detail-card-item">
+                <div class="detail-icon">🧬</div>
+                <h3>অ্যানালিটিক্যাল সিলেবাস</h3>
+                <p>শিক্ষার্থীদের চিন্তা ও গাণিতিক দক্ষতার বিকাশে আধুনিক বিষয়ভিত্তিক প্রশ্নের মাধ্যমে মেধা যাচাই করা হয়।</p>
+            </div>
+            <div class="detail-card-item">
+                <div class="detail-icon">🛡️</div>
+                <h3>চ্যালেঞ্জ মোকাবেলায় প্রস্তুতি</h3>
+                <p>পরবর্তী শিক্ষাজীবনের বিভিন্ন প্রতিযোগিতামূলক পরীক্ষার জন্য রিয়েল-টাইম আত্মবিশ্বাস তৈরি করা।</p>
+            </div>
+            <div class="detail-card-item">
+                <div class="detail-icon">🚀</div>
+                <h3>ভবিষ্যৎ নেতৃত্ব গড়ে তোলা</h3>
+                <p>মেধাবীদের সঠিক সময়ে মূল্যায়ন করে আগামী দিনের দক্ষ ও দূরদর্শী নেতৃত্ব তৈরিতে সহায়তা করা।</p>
+            </div>
+        </div>
+        <div class="center-action-btn">
+            <a href="{% url 'accounts:register' %}" class="btn-portal-main">রেজিস্ট্রেশন করুন</a>
+        </div>
+    </section>
+
+    <!-- সিলেবাস গ্রিড -->
+    <section class="portal-syllabus-grid-section">
+        <div class="portal-section-header">
+            <h2>সিলেবাস ও মানবন্টন</h2>
+            <p>শ্রেণীভিত্তিক পরীক্ষার সুনির্দিষ্ট সিলেবাস ও ডাউনলোডের সুবিধা</p>
+        </div>
+        <div class="syllabus-class-cards">
+            <div class="class-card">
+                <span class="class-tag">Class 5</span>
+                <h3>৫ম শ্রেণি সিলেবাস</h3>
+                <ul>
+                    <li>📐 গণিত — ৩০ নম্বর</li>
+                    <li>🇧🇩 বাংলা ও ইংরেজি — ৪০ নম্বর</li>
+                    <li>🧠 সাধারণ জ্ঞান — ৩০ নম্বর</li>
+                </ul>
+                <a href="#" class="btn-download-pdf"><i class="fa-solid fa-file-arrow-down"></i> সিলেবাস ডাউনলোড</a>
+            </div>
+            <div class="class-card">
+                <span class="class-tag">Class 8</span>
+                <h3>৮ম শ্রেণি সিলেবাস</h3>
+                <ul>
+                    <li>📐 গণিত — ৩০ নম্বর</li>
+                    <li>🇧🇩 বাংলা ও ইংরেজি — ৪০ নম্বর</li>
+                    <li>🧠 সাধারণ জ্ঞান — ৩০ নম্বর</li>
+                </ul>
+                <a href="#" class="btn-download-pdf"><i class="fa-solid fa-file-arrow-down"></i> সিলেবাস ডাউনলোড</a>
+            </div>
+            <div class="class-card">
+                <span class="class-tag">Class 9</span>
+                <h3>৯ম শ্রেণি সিলেবাস</h3>
+                <ul>
+                    <li>📐 গণিত — ৩০ নম্বর</li>
+                    <li>🇧🇩 বাংলা ও ইংরেজি — ৪০ নম্বর</li>
+                    <li>🧠 সাধারণ জ্ঞান — ৩০ নম্বর</li>
+                </ul>
+                <a href="#" class="btn-download-pdf"><i class="fa-solid fa-file-arrow-down"></i> সিলেবাস ডাউনলোড</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- আমাদের সাফল্য -->
+    <section class="portal-stats-dashboard">
+        <div class="portal-section-header">
+            <h2>আমাদের <span class="highlight-green">সাফল্য</span></h2>
+            <p>আমাদের যাত্রার প্রতিটি ধাপে সাফল্যের গল্প।</p>
+        </div>
+        <div class="stats-glass-row">
+            <div class="stat-glass-node">
+                <h3>৫০,০০০+</h3>
+                <p>মোট শিক্ষার্থী</p>
+            </div>
+            <div class="stat-glass-node">
+                <h3>৪,০০০+</h3>
+                <p>বৃত্তিপ্রাপ্ত শিক্ষার্থী</p>
+            </div>
+            <div class="stat-glass-node">
+                <h3>৭০+</h3>
+                <p>সম্পৃক্ত স্কুল</p>
+            </div>
+            <div class="stat-glass-node">
+                <h3>২৫+</h3>
+                <p>বছরের পথ চলা</p>
+            </div>
+        </div>
+    </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const cdEl = document.getElementById('countdown');
+    if (cdEl) {
+        let deadline;
+        const rawDeadline = cdEl.dataset.deadline ? cdEl.dataset.deadline.trim() : "";
+
+        if (rawDeadline && !rawDeadline.includes('{') && rawDeadline.split('-').length === 3) {
+            const dateParts = rawDeadline.split('-');
+            deadline = new Date(dateParts[0], dateParts[1] - 1, dateParts[2], 23, 59, 59).getTime();
+        } else {
+            const fallbackDate = new Date();
+            fallbackDate.setDate(fallbackDate.getDate() + 12);
+            fallbackDate.setHours(23, 59, 59, 999);
+            deadline = fallbackDate.getTime();
+        }
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const diff = deadline - now;
+
+            if (diff <= 0) {
+                document.getElementById('cd-days').textContent = '00';
+                document.getElementById('cd-hours').textContent = '00';
+                document.getElementById('cd-mins').textContent = '00';
+                document.getElementById('cd-secs').textContent = '00';
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
+            document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
+            document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    }
+</script>
+{% endblock %}

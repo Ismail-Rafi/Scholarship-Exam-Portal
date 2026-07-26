@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Reply Message{% endblock %}
+{% block content %}
+<div class="form-box">
+    <h2>Reply to: {{ msg.subject }}</h2>
+    <p><strong>From:</strong> {{ msg.student.username }}</p>
+    <p><strong>Message:</strong> {{ msg.message }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group"><label>Your Reply</label>{{ form.admin_reply }}</div>
+        <button type="submit" class="btn">Send Reply</button>
+    </form>
+</div>
+{% endblock %}

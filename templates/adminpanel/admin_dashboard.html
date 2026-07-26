@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h1>Admin Dashboard</h1>
+
+<div class="stats-grid">
+    <div class="stat-box"><div class="value">{{ total_forms_sold }}</div><div class="label">Forms Sold (Registrations)</div></div>
+    <div class="stat-box"><div class="value">{{ total_students }}</div><div class="label">Total Students</div></div>
+    <div class="stat-box"><div class="value">৳{{ total_paid }}</div><div class="label">Total Amount Paid</div></div>
+    <div class="stat-box"><div class="value">৳{{ total_due }}</div><div class="label">Total Due</div></div>
+    <div class="stat-box"><div class="value">{{ open_messages }}</div><div class="label">Open Support Messages</div></div>
+</div>
+
+<div class="card">
+    <h2>Ambassador Collections</h2>
+    <table class="data-table">
+        <thead><tr><th>Name</th><th>Referral Code</th><th>Registrations</th><th>Collected</th><th>Due</th></tr></thead>
+        <tbody>
+        {% for a in ambassador_stats %}
+            <tr>
+                <td>{{ a.name }}</td>
+                <td>{{ a.code }}</td>
+                <td>{{ a.registrations }}</td>
+                <td>৳{{ a.collected }}</td>
+                <td>৳{{ a.due }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5">No ambassadors yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h2>Exams</h2>
+    <table class="data-table">
+        <thead><tr><th>Name</th><th>Date</th><th>Fee</th><th>Active</th></tr></thead>
+        <tbody>
+        {% for e in exams %}
+            <tr><td>{{ e.name }}</td><td>{{ e.exam_date }}</td><td>৳{{ e.registration_fee }}</td><td>{{ e.is_active|yesno:"Yes,No" }}</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

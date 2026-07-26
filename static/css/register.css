@@ -1,0 +1,174 @@
+.auth-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh;
+    padding: 3rem 1rem;
+    background-color: #f8fafc;
+}
+
+.register-card {
+    background-color: #ffffff;
+    border: 1px solid #d1fae5;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 850px;
+    padding: 3.5rem 3rem;
+    box-shadow: 0 20px 40px rgba(4, 120, 87, 0.04);
+}
+
+.register-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 1.5rem;
+}
+
+.register-header h2 {
+    font-size: 2.2rem;
+    color: #0f172a;
+    font-weight: 800;
+    margin-bottom: 0.6rem;
+}
+
+.register-header p {
+    color: #64748b;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.premium-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.form-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.form-group-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+.form-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.input-wrapper input, 
+.input-wrapper select, 
+.input-wrapper textarea {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 12px;
+    font-size: 1rem;
+    color: #0f172a;
+    background-color: #f8fafc;
+    transition: all 0.2s ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.input-wrapper textarea {
+    resize: vertical;
+}
+
+.input-wrapper input:focus, 
+.input-wrapper select:focus,
+.input-wrapper textarea:focus {
+    border-color: #10b981;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.input-wrapper select {
+    cursor: pointer;
+    background-color: #f8fafc;
+}
+
+.form-help-text {
+    font-size: 0.82rem;
+    color: #64748b;
+    margin-top: 0.1rem;
+}
+
+.form-error-msg {
+    color: #ef4444;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 0.2rem;
+}
+
+.has-error input, .has-error select {
+    border-color: #f87171 !important;
+    background-color: #fef2f2;
+}
+
+.btn-auth-submit {
+    background-color: #047857;
+    color: #ffffff;
+    border: none;
+    padding: 1.1rem;
+    border-radius: 12px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(4, 120, 87, 0.15);
+    margin-top: 1rem;
+}
+
+.btn-auth-submit:hover {
+    background-color: #065f46;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(4, 120, 87, 0.25);
+}
+
+.register-footer {
+    text-align: center;
+    margin-top: 2.5rem;
+    border-top: 1px dashed #e2e8f0;
+    padding-top: 1.5rem;
+}
+
+.register-footer p {
+    font-size: 0.95rem;
+    color: #475569;
+}
+
+.register-footer a {
+    color: #047857;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.register-footer a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 680px) {
+    .form-fields-grid {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+    .form-group-block {
+        grid-column: span 1 !important;
+    }
+    .register-card {
+        padding: 2.5rem 1.5rem;
+    }
+    .register-header h2 {
+        font-size: 1.8rem;
+    }
+}

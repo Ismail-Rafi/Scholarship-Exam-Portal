@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Available Exams | The City Welfare{% endblock %}
+
+{% block content %}
+<!-- FontAwesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    .exams-container {
+        max-width: 1150px;
+        margin: 40px auto;
+        padding: 0 20px;
+        font-family: 'Hind Siliguri', 'Inter', system-ui, sans-serif;
+    }
+
+    /* Page Header */
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .page-header h1 {
+        font-size: 32px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0 0 10px 0;
+        letter-spacing: -0.5px;
+    }
+
+    .page-header p {
+        color: #64748b;
+        font-size: 16px;
+        margin: 0;
+    }
+
+    /* Exam Cards Grid */
+    .exams-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 28px;
+    }
+
+    /* Single Card Styling */
+    .exam-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid #d1fae5;
+        box-shadow: 0 10px 25px rgba(4, 120, 87, 0.03);
+        padding: 26px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .exam-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 35px rgba(4, 120, 87, 0.08);
+        border-color: #10b981;
+    }
+
+    /* Top Accent Line */
+    .exam-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #047857, #10b981);
+    }
+
+    /* Exam Title & Fee Badge */
+    .exam-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .exam-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.35;
+    }
+
+    .fee-badge {
+        background: #e6f9f0;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-weight: 800;
+        font-size: 15px;
+        white-space: nowrap;
+        box-shadow: 0 2px 6px rgba(4, 120, 87, 0.05);
+    }
+
+    /* Details List */
+    .exam-details {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14.5px;
+        color: #475569;
+    }
+
+    .detail-item i {
+        width: 24px;
+        height: 24px;
+        background: #e6f9f0;
+        color: #047857;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+
+    .detail-item strong {
+        color: #1e293b;
+    }
+
+    /* Deadline Box */
+    .deadline-box {
+        background: #fff1f2;
+        border: 1px solid #fecdd3;
+        color: #f43f5e;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 13.5px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    /* Action Apply Button */
+    .btn-apply-exam {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        background: linear-gradient(135deg, #047857, #065f46);
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 11px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 15px;
+        box-shadow: 0 6px 16px rgba(4, 120, 87, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .btn-apply-exam:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(4, 120, 87, 0.3);
+        background: linear-gradient(135deg, #065f46, #047857);
+    }
+
+    /* Empty State */
+    .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 70px 20px;
+        background: #ffffff;
+        border-radius: 24px;
+        border: 2px dashed #a7f3d0;
+        color: #64748b;
+    }
+
+    .empty-state i {
+        font-size: 52px;
+        margin-bottom: 16px;
+        color: #10b981;
+    }
+</style>
+
+<div class="exams-container">
+    
+    <!-- Header -->
+    <div class="page-header">
+        <h1>Available Scholarship Exams</h1>
+        <p>অংশগ্রহণ করতে আপনার পছন্দের স্কলারশিপ পরীক্ষাটি নির্বাচন করুন</p>
+    </div>
+
+    <!-- Exam Cards Grid -->
+    <div class="exams-grid">
+        {% for exam in exams %}
+            <div class="exam-card">
+                <div>
+                    <!-- Header with Name and Fee -->
+                    <div class="exam-header">
+                        <h3 class="exam-title">{{ exam.name }}</h3>
+                        <span class="fee-badge">৳{{ exam.registration_fee }}</span>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="exam-details">
+                        <div class="detail-item">
+                            <i class="fa-regular fa-calendar-days"></i>
+                            <span><strong>Date:</strong> {{ exam.exam_date|date:"d M, Y" }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fa-regular fa-clock"></i>
+                            <span><strong>Time:</strong> {{ exam.exam_time }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span><strong>Venue:</strong> {{ exam.venue }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <!-- Registration Deadline -->
+                    <div class="deadline-box">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                        <span>Deadline: {{ exam.registration_deadline|date:"d M, Y" }}</span>
+                    </div>
+
+                    <!-- Apply Action Button -->
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'students:register_exam' %}" class="btn-apply-exam">
+                            <i class="fa-solid fa-paper-plane"></i> আবেদন করুন
+                        </a>
+                    {% else %}
+                        <a href="{% url 'accounts:register' %}" class="btn-apply-exam">
+                            <i class="fa-solid fa-user-plus"></i> রেজিস্টার করে আবেদন করুন
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="empty-state">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <h3 style="margin: 0; color: #0f172a; font-size: 20px; font-weight: 700;">No Active Exams Right Now</h3>
+                <p style="margin: 8px 0 0 0; font-size: 15px;">নতুন পরীক্ষার সার্কুলার প্রকাশ হলে খুব দ্রুতই এখানে দেখতে পাবেন।</p>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

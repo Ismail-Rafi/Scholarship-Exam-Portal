@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Scholarship Exam Portal — The City Welfare{% endblock %}</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <!-- 🖼️ ব্র্যান্ড লোগো ইমেজ -->
+            <a href="{% url 'main_home' %}" class="nav-logo">
+                <img src="{% static '2.jpg' %}" alt="The City Welfare Logo" class="nav-logo-img" onerror="this.src='https://placehold.co/200x60/ffffff/047857?text=The+City+Welfare'">
+            </a>
+
+            <!-- মোবাইল ন্যাভ টগল বাটন -->
+            <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <!-- লিংক সমূহ -->
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{% url 'main_home' %}"><i class="fa-solid fa-house"></i> হোম</a></li>
+                <li><a href="{% url 'exams:exam_list' %}"><i class="fa-solid fa-graduation-cap"></i> বৃত্তি</a></li>
+                <li><a href="#notice"><i class="fa-solid fa-bullhorn"></i> নোটিশ</a></li>
+                <li><a href="#contact"><i class="fa-solid fa-envelope"></i> যোগাযোগ</a></li>
+
+                {% if user.is_authenticated %}
+                    {% if user.role == 'STUDENT' %}
+                        <li><a href="{% url 'students:dashboard' %}" class="nav-highlight-link"><i class="fa-solid fa-gauge"></i> ড্যাশবোর্ড</a></li>
+                        <li><a href="{% url 'students:register_exam' %}"><i class="fa-solid fa-file-signature"></i> আবেদন ফর্ম</a></li>
+                        <li><a href="{% url 'messaging:send_message' %}"><i class="fa-solid fa-headset"></i> সহায়তা</a></li>
+                    {% else %}
+                        <li><a href="{% url 'adminpanel:admin_dashboard' %}" class="nav-highlight-link"><i class="fa-solid fa-user-shield"></i> প্যানেল</a></li>
+                    {% endif %}
+                    
+                    <li class="nav-user">
+                        <i class="fa-solid fa-circle-user"></i> {{ user.first_name|default:user.username }}
+                    </li>
+                    <li>
+                        <a href="{% url 'accounts:logout' %}" class="btn-logout">
+                            <i class="fa-solid fa-right-from-bracket"></i> লগআউট
+                        </a>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'accounts:login' %}" class="btn-login">লগইন</a></li>
+                    <li><a href="{% url 'accounts:register' %}" class="btn-register">রেজিস্ট্রেশন</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Dynamic Content Area -->
+    <main class="page-content">
+        {% if messages %}
+            <div class="messages-wrapper">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        <i class="fa-solid {% if message.tags == 'success' %}fa-circle-check{% elif message.tags == 'error' %}fa-triangle-exclamation{% else %}fa-circle-info{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Premium Aesthetic Footer -->
+    <footer class="portal-footer" id="contact">
+        <div class="footer-container">
+            
+            <!-- বাম কলাম: দ্রুত লিংক -->
+            <div class="footer-column links-column">
+                <h3>দরকারী লিংক</h3>
+                <ul>
+                    <li><a href="{% url 'main_home' %}">হোম</a></li>
+                    <li><a href="{% url 'exams:exam_list' %}">বৃত্তি সমূহের তালিকা</a></li>
+                    <li><a href="{% url 'accounts:register' %}">নতুন রেজিস্ট্রেশন</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                </ul>
+            </div>
+
+            <!-- মাঝের কলাম: ব্রান্ডিং ও স্লোগান -->
+            <div class="footer-column brand-column">
+                <div class="footer-logo">
+                    <img src="{% static '2.jpg' %}" alt="The City Welfare Logo" class="footer-logo-img" onerror="this.src='https://placehold.co/240x80/ffffff/047857?text=The+City+Welfare'">
+                </div>
+                <p class="footer-slogan">
+                    "শুভ্রতার স্পর্শে লালিত স্বপ্ন বিকশিত হোক সত্যের ছোঁয়ায়"<br>
+                    মেধাবীদের স্বপ্ন পূরণের আস্থা ও বিশ্বাসযোগ্য ঠিকানা।
+                </p>
+                
+                <!-- সোশ্যাল আইকন মেম্বারশিপ -->
+                <div class="footer-socials">
+                    <a href="#" class="social-icon fb" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon insta" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon ln" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon yt" title="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <!-- ডান কলাম: অফিশিয়াল তথ্য -->
+            <div class="footer-column contact-column">
+                <h3>যোগাযোগ</h3>
+                <p><i class="fa-solid fa-envelope"></i> <a href="mailto:city@gmail.com">north@gmail.com</a></p>
+                <p><i class="fa-solid fa-phone"></i> <a href="tel:+8801879891623">+8801234567880</a></p>
+                <p><i class="fa-solid fa-location-dot"></i> চট্টগ্রাম, বাংলাদেশ</p>
+            </div>
+
+        </div>
+
+        <!-- ফুটার বটম বার -->
+        <div class="footer-bottom">
+            <p>স্বত্ব © {% now "Y" %} 'দি সিটি ওয়েলফেয়ার' বৃত্তি প্রকল্প। সর্বস্বত্ব সংরক্ষিত।</p>
+            <p class="developer-credit">Crafted with ❤️ by <a href="#" target="_blank">Abayra Web Lab</a></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Files & Mobile Nav Handler -->
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        // মোবাইল রেসপন্সিভ মেনু টগল
+        const mobileToggle = document.getElementById('mobileNavToggle');
+        const navLinks = document.getElementById('navLinks');
+        if (mobileToggle && navLinks) {
+            mobileToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('nav-active');
+            });
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}My Messages{% endblock %}
+{% block content %}
+<h1>My Support Messages</h1>
+<a href="{% url 'messaging:send_message' %}" class="btn" style="margin-bottom:16px;display:inline-block;">+ New Message</a>
+{% for m in messages_list %}
+    <div class="card">
+        <h3>{{ m.subject }} <span class="badge badge-{{ m.status|lower }}">{{ m.get_status_display }}</span></h3>
+        <p>{{ m.message }}</p>
+        {% if m.admin_reply %}
+            <p><strong>Reply:</strong> {{ m.admin_reply }}</p>
+        {% endif %}
+        <small>{{ m.created_at|date:"d M Y, H:i" }}</small>
+    </div>
+{% empty %}
+    <p>You haven't sent any messages yet.</p>
+{% endfor %}
+{% endblock %}

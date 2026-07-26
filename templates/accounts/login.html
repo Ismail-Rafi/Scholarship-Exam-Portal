@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login | Scholarship Exam Portal{% endblock %}
+
+{% block content %}
+<!-- এই পেজের জন্য আলাদা সিএসএস ফাইল লিঙ্ক করা হলো -->
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<div class="auth-page-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h2>Account Login</h2>
+            <p>আপনার ড্যাশবোর্ডে প্রবেশ করতে লগইন করুন</p>
+        </div>
+        
+        <form method="post" class="premium-form">
+            {% csrf_token %}
+            
+            <!-- ইউজারনেম ফিল্ড -->
+            <div class="form-group-block">
+                <label class="form-label">Username / Email</label>
+                <div class="input-wrapper">
+                    {{ form.username }}
+                </div>
+                {% if form.username.errors %}
+                    <div class="form-error-msg">
+                        {% for error in form.username.errors %}
+                            <span>⚠️ {{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- পাসওয়ার্ড ফিল্ড -->
+            <div class="form-group-block">
+                <label class="form-label">Password</label>
+                <div class="input-wrapper">
+                    {{ form.password }}
+                </div>
+                {% if form.password.errors %}
+                    <div class="form-error-msg">
+                        {% for error in form.password.errors %}
+                            <span>⚠️ {{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- গ্লোবাল ফরম এরর (যদি ইউজারনেম বা পাসওয়ার্ড ভুল হয়) -->
+            {% if form.non_field_errors %}
+                <div class="form-error-msg global-error">
+                    {% for error in form.non_field_errors %}
+                        <span>❌ {{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <button type="submit" class="btn-auth-submit">Login</button>
+        </form>
+        
+        <div class="login-footer">
+            <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register as Student</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

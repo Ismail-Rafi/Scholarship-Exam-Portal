@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register | Scholarship Exam Portal{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+
+<div class="auth-page-container">
+    <div class="register-card">
+        <div class="register-header">
+            <h2>Student Registration</h2>
+            <p>বৃত্তি পরীক্ষায় অংশগ্রহণের জন্য আপনার সঠিক প্রাতিষ্ঠানিক ও ব্যক্তিগত তথ্য দিয়ে অ্যাকাউন্ট তৈরি করুন</p>
+        </div>
+        
+        <form method="post" class="premium-form">
+            {% csrf_token %}
+            
+            <div class="form-fields-grid">
+                {% for field in form %}
+                    <div class="form-group-block {% if field.errors %}has-error{% endif %} {% if field.name == 'institution' or field.name == 'address' or field.name == 'email' %}full-width{% endif %}">
+                        <label class="form-label">{{ field.label }}</label>
+                        <div class="input-wrapper">
+                            {{ field }}
+                        </div>
+                        
+                        {% if field.help_text %}
+                            <small class="form-help-text">{{ field.help_text }}</small>
+                        {% endif %}
+                        
+                        {% if field.errors %}
+                            <div class="form-error-msg">
+                                {% for error in field.errors %}
+                                    <span>⚠️ {{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <button type="submit" class="btn-auth-submit">Complete Registration 🚀</button>
+        </form>
+        
+        <div class="register-footer">
+            <p>Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

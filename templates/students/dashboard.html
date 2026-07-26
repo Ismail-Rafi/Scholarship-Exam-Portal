@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Student Dashboard | The City Welfare{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    .btn-pay-now {
+        background: #2563eb;
+        color: #ffffff !important;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 0.2s ease;
+    }
+    .btn-pay-now:hover { background: #1d4ed8; }
+    
+    .btn-download-admit {
+        background: #059669;
+        color: #ffffff !important;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .btn-download-admit:hover { background: #047857; }
+
+    .badge-approved { background: #dcfce7; color: #15803d; padding: 4px 10px; border-radius: 50px; font-weight: 600; font-size: 12px; }
+    .badge-pending { background: #fef3c7; color: #b45309; padding: 4px 10px; border-radius: 50px; font-weight: 600; font-size: 12px; }
+</style>
+
+<div class="dashboard-container">
+    
+    <!-- ড্যাশবোর্ড হেডার -->
+    <div class="welcome-header">
+        <h1>Welcome back, {{ user.first_name|default:user.username }}! 👋</h1>
+        <p>আপনার অ্যাকাউন্ট, পেমেন্ট ও পরীক্ষার এডমিট কার্ডের আপডেট এখানে পাবেন।</p>
+    </div>
+
+    <!-- ১. স্ট্যাটাস বক্স সেকশন -->
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="stat-icon">📝</div>
+            <div class="stat-details">
+                <div class="value">{{ registrations.count }}</div>
+                <div class="label">Exams Applied</div>
+            </div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-icon">🎓</div>
+            <div class="stat-details">
+                <div class="value">{{ admit_cards.count }}</div>
+                <div class="label">Admit Cards Issued</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ২. পরীক্ষার রেজিস্ট্রেশন, পেমেন্ট ও এডমিট কার্ড সেকশন -->
+    <div class="dashboard-card">
+        <div class="card-header-flex">
+            <h2>My Exam Registrations</h2>
+            <a href="{% url 'students:register_exam' %}" class="btn-primary-custom">
+                + Apply for a New Exam
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Exam Name</th>
+                        <th>Roll No.</th>
+                        <th>Exam Date</th>
+                        <th>Approval Status</th>
+                        <th>Payment Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for reg in registrations %}
+                    {% for pay in payments %}
+                        {% if pay.exam_id == reg.exam_id %}
+                        <tr>
+                            <td><strong>{{ reg.exam.name }}</strong></td>
+                            <td><code>{{ reg.roll_number }}</code></td>
+                            <td>{{ reg.exam.exam_date|date:"M d, Y" }}</td>
+                            
+                            <!-- 📌 ১. অ্যাডমিন অ্যাপ্রুভাল স্ট্যাটাস -->
+                            <td>
+                                {% if reg.is_approved %}
+                                    <span class="badge-approved"><i class="fa-solid fa-circle-check"></i> Approved</span>
+                                {% else %}
+                                    <span class="badge-pending"><i class="fa-solid fa-clock"></i> Pending Approval</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- 📌 ২. পেমেন্ট স্ট্যাটাস -->
+                            <td>
+                                {% if pay.status == 'PAID' %}
+                                    <span class="badge badge-paid">Paid</span>
+                                {% else %}
+                                    <span class="badge badge-pending">Pending</span>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- 📌 ৩. ডায়নামিক বাটন (Pay Now vs Status) -->
+                            <td>
+                                {% if pay.status != 'PAID' %}
+                                    <!-- যদি পেমেন্ট বাকি থাকে -->
+                                    <a href="{% url 'payments:checkout' pay.id %}" class="btn-pay-now">
+                                        💳 Pay Now (৳{{ pay.due_amount }})
+                                    </a>
+                                {% elif not reg.is_approved %}
+                                    <!-- পেমেন্ট শেষ কিন্তু অ্যাডমিন অ্যাপ্রুভ করেনি -->
+                                    <small style="color: #64748b;">Waiting for admin approval</small>
+                                {% else %}
+                                    <!-- পেমেন্ট সম্পূর্ণ এবং অ্যাডমিন অ্যাপ্রুভ করেছে -->
+                                    <span style="color: #059669; font-weight: 600;">Ready!</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty-msg">You haven't applied for any exam yet.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ৩. প্রবেশপত্র (Admit Card) ডাউনলোড সেকশন -->
+    <div class="dashboard-card">
+        <h2><i class="fa-solid fa-file-arrow-down" style="color: #059669;"></i> My Admit Cards</h2>
+        <div style="margin-top: 16px;">
+        {% for card in admit_cards %}
+            <div class="admit-card-item" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 10px;">
+                <div>
+                    <strong style="font-size: 16px; color: #0f172a;">{{ card.registration.exam.name }}</strong>
+                    <div style="font-size: 0.85rem; color: #64748b; margin-top: 2px;">
+                        Roll: <code>{{ card.registration.roll_number }}</code>
+                    </div>
+                </div>
+                
+                <div>
+                    <!-- 🔒 ডাউনলোড লজিক: শুধু অ্যাডমিন অ্যাপ্রুভড এবং ফাইল চেক -->
+                    {% if card.registration.is_approved %}
+                        {% if card.file %}
+                            <!-- ব্যাকএন্ড থেকে জেনারেট করা আসল PDF ফাইল ডাউনলোডের বাটন -->
+                            <a href="{{ card.file.url }}" class="btn-download-admit" target="_blank">
+                                <i class="fa-solid fa-download"></i> Download Admit Card
+                            </a>
+                        {% else %}
+                            <!-- যদি কোনো কারণে PDF সেভ হতে দেরি হয় -->
+                            <span style="color: #059669; font-weight: 600; font-size: 13px;">
+                                <i class="fa-solid fa-circle-check"></i> Approved (Processing PDF...)
+                            </span>
+                        {% endif %}
+                    {% else %}
+                        <span class="badge-pending">
+                            <i class="fa-solid fa-lock"></i> Locked (Needs Admin Approval)
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <p class="empty-msg">No admit card available right now. Apply for an exam and pay to unlock!</p>
+        {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,417 @@
+{% extends 'base.html' %}
+
+{% block title %}Main Administration Panel | Scholarship Portal{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --primary-dark: #0f172a;
+        --card-bg: #ffffff;
+        --border-color: #e2e8f0;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --accent-green: #059669;
+        --accent-amber: #d97706;
+        --accent-blue: #2563eb;
+    }
+
+    .admin-wrapper {
+        display: flex;
+        min-height: calc(100vh - 80px);
+        background-color: #f8fafc;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    .admin-sidebar {
+        width: 260px;
+        background: #0f172a;
+        color: #f8fafc;
+        padding: 30px 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .admin-brand {
+        font-size: 18px;
+        font-weight: 800;
+        color: #38bdf8;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 35px;
+    }
+
+    .sidebar-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .sidebar-menu a {
+        color: #94a3b8;
+        text-decoration: none;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.2s;
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+    }
+
+    .sidebar-menu a.active {
+        background: #2563eb;
+    }
+
+    .admin-main {
+        flex: 1;
+        padding: 40px;
+        overflow-y: auto;
+    }
+
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 35px;
+    }
+
+    .admin-header h1 {
+        font-size: 28px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0 0 5px 0;
+    }
+
+    .admin-header p {
+        color: #64748b;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .admin-badge {
+        background: #1e293b;
+        color: #38bdf8;
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-bottom: 35px;
+    }
+
+    .stat-card {
+        background: #ffffff;
+        padding: 24px;
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .stat-info .value {
+        font-size: 32px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.1;
+    }
+
+    .stat-info .label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 6px;
+    }
+
+    .stat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+    }
+
+    .table-container {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+        overflow: hidden;
+    }
+
+    .table-header {
+        padding: 24px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .table-header h2 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    .admin-table th {
+        background: #f8fafc;
+        padding: 16px 24px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .admin-table td {
+        padding: 18px 24px;
+        font-size: 14px;
+        color: #334155;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .admin-table tbody tr:hover {
+        background-color: #f8fafc;
+    }
+
+    .badge-status {
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-approved { background: #dcfce7; color: #15803d; }
+    .badge-pending { background: #fef3c7; color: #b45309; }
+
+    .btn-action-approve {
+        background: #059669;
+        color: #ffffff !important;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+        transition: background 0.2s;
+    }
+
+    .btn-action-approve:hover {
+        background: #047857;
+    }
+
+    .user-pill {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .avatar-circle {
+        width: 36px;
+        height: 36px;
+        background: #e2e8f0;
+        color: #0f172a;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+    }
+</style>
+
+<div class="admin-wrapper">
+    
+    <div class="admin-sidebar">
+        <div>
+            <div class="admin-brand">
+                <i class="fa-solid fa-shield-halved"></i> Main Administration
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active"><i class="fa-solid fa-chart-pie"></i> Registrations</a></li>
+                <li><a href="/admin/" target="_blank"><i class="fa-solid fa-database"></i> Django Admin</a></li>
+            </ul>
+        </div>
+        <div style="font-size: 12px; color: #64748b; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+            System Status: <span style="color: #10b981; font-weight: 700;">● Online</span>
+        </div>
+    </div>
+
+    <div class="admin-main">
+        
+        <div class="admin-header">
+            <div>
+                <h1>Executive Admin Dashboard</h1>
+                <p>স্টুডেন্টদের আবেদন ভেরিফাই করুন এবং একক ক্লিকে এডমিট কার্ড ইস্যু করুন।</p>
+            </div>
+            <div>
+                <span class="admin-badge"><i class="fa-solid fa-user-shield"></i> {{ request.user.username|title }} (Superadmin)</span>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div style="background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; padding: 14px 20px; border-radius: 12px; margin-bottom: 25px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-circle-check"></i> {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <div class="value">{{ total_applicants }}</div>
+                    <div class="label">Total Applications</div>
+                </div>
+                <div class="stat-icon" style="background: #eff6ff; color: #2563eb;">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <div class="value" style="color: #d97706;">{{ pending_count }}</div>
+                    <div class="label">Pending Approvals</div>
+                </div>
+                <div class="stat-icon" style="background: #fffbeb; color: #d97706;">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <div class="value" style="color: #059669;">{{ approved_count }}</div>
+                    <div class="label">Admit Issued</div>
+                </div>
+                <div class="stat-icon" style="background: #ecfdf5; color: #059669;">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h2><i class="fa-solid fa-users" style="color: #2563eb; margin-right: 8px;"></i> Student Exam Applications</h2>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Student Details</th>
+                            <th>Exam Name</th>
+                            <th>Roll Number</th>
+                            <th>Current Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reg in registrations %}
+                        <tr>
+                            <td style="color: #94a3b8; font-weight: 600;">{{ forloop.counter }}</td>
+                            <td>
+                                <div class="user-pill">
+                                    <div class="avatar-circle">
+                                        {% if reg.student.user %}
+                                            {{ reg.student.user.username|first|upper }}
+                                        {% else %}
+                                            {{ reg.student.username|first|upper }}
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 700; color: #0f172a;">
+                                            {% if reg.student.user %}
+                                                {{ reg.student.user.get_full_name|default:reg.student.user.username }}
+                                            {% else %}
+                                                {{ reg.student.get_full_name|default:reg.student.username }}
+                                            {% endif %}
+                                        </div>
+                                        <small style="color: #64748b;">
+                                            {% if reg.student.user %}
+                                                {{ reg.student.user.email }}
+                                            {% else %}
+                                                {{ reg.student.email }}
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="font-weight: 600;">{{ reg.exam.name }}</td>
+                            <td><code style="background: #f1f5f9; padding: 4px 8px; border-radius: 6px; font-weight: 700; color: #2563eb;">{{ reg.roll_number }}</code></td>
+                            <td>
+                                {% if reg.is_approved %}
+                                    <span class="badge-status badge-approved"><i class="fa-solid fa-check"></i> Approved</span>
+                                {% else %}
+                                    <span class="badge-status badge-pending"><i class="fa-solid fa-clock"></i> Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not reg.is_approved %}
+                                    <a href="{% url 'accounts:approve_registration' reg.id %}" class="btn-action-approve" onclick="return confirm('এই স্টুডেন্টকে অ্যাপ্রুভ করতে এবং এডমিট কার্ড ড্যাশবোর্ডে পাঠাতে নিশ্চিত তো?');">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Approve & Send Admit
+                                    </a>
+                                {% else %}
+                                    <span style="color: #059669; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 5px;">
+                                        <i class="fa-solid fa-circle-check"></i> Admit Card Active
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="padding: 50px; text-align: center; color: #94a3b8;">
+                                <i class="fa-regular fa-folder-closed" style="font-size: 36px; display: block; margin-bottom: 10px;"></i>
+                                কোনো স্টুডেন্টের আবেদন আপাতত জমা নেই।
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

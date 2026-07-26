@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ambassador Registration | The City Welfare{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* অ্যাম্বাসেডর রেজিস্ট্রেশন পেজ স্টাইলিং */
+    .ambassador-auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 85vh;
+        padding: 3rem 1rem;
+    }
+
+    .ambassador-card {
+        background-color: #ffffff;
+        border: 1px solid #d1fae5;
+        border-radius: 24px;
+        width: 100%;
+        max-width: 580px;
+        padding: 3.2rem 2.5rem;
+        box-shadow: 0 15px 35px rgba(4, 120, 87, 0.05);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* টপ থিম অ্যাকসেন্ট স্ট্রিপ */
+    .ambassador-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #047857, #10b981);
+    }
+
+    /* হেডার সেকশন */
+    .ambassador-header {
+        text-align: center;
+        margin-bottom: 2.2rem;
+    }
+
+    .ambassador-badge {
+        background-color: #e6f9f0;
+        color: #047857;
+        padding: 0.35rem 1.1rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 0.8rem;
+        border: 1px solid #a7f3d0;
+    }
+
+    .ambassador-header h2 {
+        font-size: 2rem;
+        color: #0f172a;
+        font-weight: 800;
+        margin-bottom: 0.4rem;
+        letter-spacing: -0.5px;
+    }
+
+    .ambassador-header p {
+        color: #64748b;
+        font-size: 0.98rem;
+    }
+
+    /* ফর্ম গ্রুপ ও ফিল্ড স্টাইলিং */
+    .ambassador-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.4rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-group label {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* জ্যাঙ্গো ইনপুট অটো স্টাইলিং */
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+        width: 100%;
+        padding: 0.85rem 1.1rem;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 12px;
+        font-size: 0.98rem;
+        color: #0f172a;
+        background-color: #f8fafc;
+        transition: all 0.25s ease;
+        outline: none;
+        box-sizing: border-box;
+        font-family: inherit;
+    }
+
+    .form-group input:focus, 
+    .form-group select:focus, 
+    .form-group textarea:focus {
+        border-color: #10b981;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+    }
+
+    /* এরর হ্যান্ডলিং */
+    .form-alert-error {
+        color: #be123c;
+        background-color: #ffe4e6;
+        border: 1px solid #fca5a5;
+        padding: 0.85rem 1rem;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .field-error-text {
+        color: #ef4444;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-top: 0.2rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    /* সাবমিট বাটন */
+    .btn-ambassador-submit {
+        background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+        color: #ffffff;
+        border: none;
+        padding: 1rem;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(4, 120, 87, 0.2);
+        margin-top: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-ambassador-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 26px rgba(4, 120, 87, 0.3);
+        background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+    }
+
+    @media (max-width: 640px) {
+        .ambassador-card {
+            padding: 2.2rem 1.5rem;
+        }
+        .ambassador-header h2 {
+            font-size: 1.7rem;
+        }
+    }
+</style>
+
+<div class="ambassador-auth-container">
+    <div class="ambassador-card">
+        
+        <!-- Header -->
+        <div class="ambassador-header">
+            <span class="ambassador-badge">
+                <i class="fa-solid fa-award"></i> 'দি সিটি ওয়েলফেয়ার' প্রতিনিধি
+            </span>
+            <h2>অ্যাম্বাসেডর রেজিস্ট্রেশন</h2>
+            <p>আমাদের প্রতিনিধি হিসেবে যুক্ত হতে নিচের ফরমটি সঠিক তথ্য দিয়ে পূরণ করুন</p>
+        </div>
+
+        <form method="POST" class="ambassador-form">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="form-alert-error">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <div>{{ form.non_field_errors }}</div>
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">
+                        <i class="fa-solid fa-pen-nib" style="color: #047857; font-size: 12px;"></i>
+                        {{ field.label }}
+                    </label>
+                    
+                    {{ field }}
+                    
+                    {% if field.help_text %}
+                        <small style="color: #64748b; font-size: 0.82rem;">{{ field.help_text }}</small>
+                    {% endif %}
+
+                    {% if field.errors %}
+                        <div class="field-error-text">
+                            <i class="fa-solid fa-circle-xmark"></i> {{ field.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn-ambassador-submit">
+                <i class="fa-solid fa-user-check"></i> রেজিস্ট্রেশন সম্পন্ন করুন
+            </button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}
